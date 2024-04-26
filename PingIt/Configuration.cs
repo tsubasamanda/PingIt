@@ -11,6 +11,10 @@ namespace PingIt
 
         public bool SomePropertyToBeSavedAndWithADefault { get; set; } = true;
 
+        public PingConfig[] Configs { get; set; } = {
+            new PingConfig("Ability Cooldown", PingConfig.TargetType.Ability, "")
+        };
+
         // the below exist just to make saving less cumbersome
         [NonSerialized]
         private DalamudPluginInterface? PluginInterface;

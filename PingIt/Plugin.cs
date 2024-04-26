@@ -18,7 +18,6 @@ namespace PingIt
         public Configuration Configuration { get; init; }
         public WindowSystem WindowSystem = new("PingIt");
 
-        private ConfigWindow ConfigWindow { get; init; }
         private MainWindow MainWindow { get; init; }
 
         public Plugin(
@@ -31,14 +30,7 @@ namespace PingIt
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
 
-            // you might normally want to embed resources and load them from the manifest stream
-            var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png");
-            var goatImage = this.PluginInterface.UiBuilder.LoadImage(imagePath);
-
-            ConfigWindow = new ConfigWindow(this);
-            MainWindow = new MainWindow(this, goatImage);
-            
-            WindowSystem.AddWindow(ConfigWindow);
+            MainWindow = new MainWindow(this);
             WindowSystem.AddWindow(MainWindow);
 
             this.CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
@@ -47,14 +39,13 @@ namespace PingIt
             });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
-            this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+            this.PluginInterface.UiBuilder.OpenConfigUi += null;
         }
 
         public void Dispose()
         {
             this.WindowSystem.RemoveAllWindows();
             
-            ConfigWindow.Dispose();
             MainWindow.Dispose();
             
             this.CommandManager.RemoveHandler(CommandName);
@@ -71,9 +62,5 @@ namespace PingIt
             this.WindowSystem.Draw();
         }
 
-        public void DrawConfigUI()
-        {
-            ConfigWindow.IsOpen = true;
-        }
     }
 }
